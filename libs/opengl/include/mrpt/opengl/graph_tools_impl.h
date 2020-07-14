@@ -8,6 +8,7 @@
    +------------------------------------------------------------------------+ */
 #pragma once
 
+#include <mrpt/containers/Parameters.h>
 #include <mrpt/img/TColor.h>
 #include <mrpt/opengl/CGridPlaneXY.h>
 #include <mrpt/opengl/CPointCloud.h>
@@ -21,7 +22,7 @@ namespace mrpt::opengl::graph_tools
 {
 template <class GRAPH_T>
 CSetOfObjects::Ptr graph_visualize(
-	const GRAPH_T& g, const mrpt::system::TParametersDouble& extra_params)
+	const GRAPH_T& g, const mrpt::containers::Parameters& extra_params)
 {
 	MRPT_TRY_START
 
@@ -38,28 +39,27 @@ CSetOfObjects::Ptr graph_visualize(
 
 	// graph visualization parameters
 	const bool show_ID_labels =
-		0 != extra_params.getWithDefaultVal("show_ID_labels", 0);
+		extra_params.getOrDefault("show_ID_labels", false);
 	const bool show_ground_grid =
-		0 != extra_params.getWithDefaultVal("show_ground_grid", 1);
-	const bool show_edges =
-		0 != extra_params.getWithDefaultVal("show_edges", 1);
+		extra_params.getOrDefault("show_ground_grid", true);
+	const bool show_edges = extra_params.getOrDefault("show_edges", true);
 	const bool show_node_corners =
-		0 != extra_params.getWithDefaultVal("show_node_corners", 1);
+		extra_params.getOrDefault("show_node_corners", true);
 	const bool show_edge_rel_poses =
-		0 != extra_params.getWithDefaultVal("show_edge_rel_poses", 0);
+		extra_params.getOrDefault("show_edge_rel_poses", false);
 	const double nodes_point_size =
-		extra_params.getWithDefaultVal("nodes_point_size", 0.);
+		extra_params.getOrDefault("nodes_point_size", 0.);
 	const double nodes_corner_scale =
-		extra_params.getWithDefaultVal("nodes_corner_scale", 0.7);
+		extra_params.getOrDefault("nodes_corner_scale", 0.7);
 	const double nodes_edges_corner_scale =
-		extra_params.getWithDefaultVal("nodes_edges_corner_scale", 0.4);
-	const unsigned int nodes_point_color = extra_params.getWithDefaultVal(
-		"nodes_point_color", (unsigned int)0xA0A0A0);
-	const unsigned int edge_color =
-		extra_params.getWithDefaultVal("edge_color", (unsigned int)0x400000FF);
-	const unsigned int edge_rel_poses_color = extra_params.getWithDefaultVal(
-		"edge_rel_poses_color", (unsigned int)0x40FF8000);
-	const double edge_width = extra_params.getWithDefaultVal("edge_width", 2.);
+		extra_params.getOrDefault("nodes_edges_corner_scale", 0.4);
+	const auto nodes_point_color =
+		extra_params.getOrDefault<uint32_t>("nodes_point_color", 0xA0A0A0);
+	const auto edge_color =
+		extra_params.getOrDefault<uint32_t>("edge_color", 0x400000FF);
+	const auto edge_rel_poses_color =
+		extra_params.getOrDefault<uint32_t>("edge_rel_poses_color", 0x40FF8000);
+	const double edge_width = extra_params.getOrDefault("edge_width", 2.);
 
 	if (show_ground_grid)
 	{
@@ -69,7 +69,7 @@ CSetOfObjects::Ptr graph_visualize(
 		for (auto itNod = g.nodes.begin(); itNod != g.nodes.end(); ++itNod)
 		{
 			const CPose3D p = CPose3D(
-				itNod->second);  // Convert to 3D from whatever its real type.
+				itNod->second);	 // Convert to 3D from whatever its real type.
 
 			keep_min(BB_min.x, p.x());
 			keep_min(BB_min.y, p.y());
@@ -100,7 +100,7 @@ CSetOfObjects::Ptr graph_visualize(
 		for (auto itNod = g.nodes.begin(); itNod != g.nodes.end(); ++itNod)
 		{
 			const CPose3D p = CPose3D(
-				itNod->second);  // Convert to 3D from whatever its real type.
+				itNod->second);	 // Convert to 3D from whatever its real type.
 			pnts->insertPoint(p.x(), p.y(), p.z());
 		}
 
@@ -113,7 +113,7 @@ CSetOfObjects::Ptr graph_visualize(
 		for (auto itNod = g.nodes.begin(); itNod != g.nodes.end(); ++itNod)
 		{
 			const CPose3D p = CPose3D(
-				itNod->second);  // Convert to 3D from whatever its real type.
+				itNod->second);	 // Convert to 3D from whatever its real type.
 			CSetOfObjects::Ptr gl_corner =
 				show_node_corners
 					? (is_3D_graph
@@ -123,7 +123,7 @@ CSetOfObjects::Ptr graph_visualize(
 								 nodes_corner_scale, 1.0 /*line width*/))
 					: std::make_shared<CSetOfObjects>();
 			gl_corner->setPose(p);
-			if (show_ID_labels)  // don't show IDs twice!
+			if (show_ID_labels)	 // don't show IDs twice!
 			{
 				gl_corner->setName(
 					format("%u", static_cast<unsigned int>(itNod->first)));

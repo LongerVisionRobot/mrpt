@@ -7,8 +7,6 @@
    | Released under BSD License. See: https://www.mrpt.org/License          |
    +------------------------------------------------------------------------+ */
 
-#include "comms-precomp.h"  // Precompiled headers
-
 #include <mrpt/comms/CClientTCPSocket.h>
 #include <mrpt/comms/CServerTCPSocket.h>
 #include <mrpt/comms/net_utils.h>
@@ -22,6 +20,8 @@
 #include <future>
 #include <thread>
 
+#include "comms-precomp.h"	// Precompiled headers
+
 #if defined(MRPT_OS_LINUX) || defined(__APPLE__)
 #define INVALID_SOCKET (-1)
 #include <arpa/inet.h>
@@ -32,6 +32,7 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <unistd.h>
+
 #include <cerrno>
 #endif
 
@@ -52,8 +53,8 @@ ERRORCODE_HTTP mrpt::comms::net::http_get(
 	const string& url, string& out_content, string& out_errormsg, int port,
 	const string& auth_user, const string& auth_pass,
 	int* out_http_responsecode,
-	mrpt::system::TParameters<string>* extra_headers,
-	mrpt::system::TParameters<string>* out_headers, int timeout_ms)
+	mrpt::containers::KeyValues<string>* extra_headers,
+	mrpt::containers::KeyValues<string>* out_headers, int timeout_ms)
 {
 	std::vector<uint8_t> data;
 	ERRORCODE_HTTP ret = http_get(
@@ -71,8 +72,8 @@ ERRORCODE_HTTP mrpt::comms::net::http_request(
 	const string& url, std::vector<uint8_t>& out_content, string& out_errormsg,
 	int port, const string& auth_user, const string& auth_pass,
 	int* out_http_responsecode,
-	mrpt::system::TParameters<string>* extra_headers,
-	mrpt::system::TParameters<string>* out_headers, int timeout_ms)
+	mrpt::containers::KeyValues<string>* extra_headers,
+	mrpt::containers::KeyValues<string>* out_headers, int timeout_ms)
 {
 	// Reset output data:
 	out_content.clear();
@@ -120,7 +121,7 @@ ERRORCODE_HTTP mrpt::comms::net::http_request(
 	try
 	{
 		// Set the user-defined headers (we may overwrite them if needed)
-		TParameters<string> headers_to_send;
+		mrpt::containers::KeyValues<string> headers_to_send;
 		if (extra_headers) headers_to_send = *extra_headers;
 
 		headers_to_send["Connection"] = "close";  // Don't keep alive
@@ -184,7 +185,7 @@ ERRORCODE_HTTP mrpt::comms::net::http_request(
 		size_t content_length = 0;
 		size_t content_offset = 0;
 		int http_code = 0;
-		mrpt::system::TParameters<string> rx_headers;
+		mrpt::containers::KeyValues<string> rx_headers;
 
 		CTicTac watchdog;
 		watchdog.Tic();
@@ -387,8 +388,8 @@ ERRORCODE_HTTP mrpt::comms::net::http_get(
 	const string& url, std::vector<uint8_t>& out_content, string& out_errormsg,
 	int port, const string& auth_user, const string& auth_pass,
 	int* out_http_responsecode,
-	mrpt::system::TParameters<string>* extra_headers,
-	mrpt::system::TParameters<string>* out_headers, int timeout_ms)
+	mrpt::containers::KeyValues<string>* extra_headers,
+	mrpt::containers::KeyValues<string>* out_headers, int timeout_ms)
 {
 	return http_request(
 		"GET", "", url, out_content, out_errormsg, port, auth_user, auth_pass,
@@ -440,14 +441,14 @@ bool net::DNS_resolve_async(
 			hostent* he = gethostbyname(server_name.c_str());
 			if (!he)
 			{
-				dns_result.clear();  // empty string -> error.
+				dns_result.clear();	 // empty string -> error.
 			}
 			else
 			{
 				struct in_addr ADDR;
 				std::memcpy(
 					&ADDR, he->h_addr,
-					sizeof(ADDR));  // Was: *((struct in_addr *)he->h_addr);
+					sizeof(ADDR));	// Was: *((struct in_addr *)he->h_addr);
 				// Convert address to text:
 				dns_result = string(inet_ntoa(ADDR));
 			}

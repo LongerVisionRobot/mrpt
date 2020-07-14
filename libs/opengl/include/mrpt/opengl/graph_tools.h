@@ -8,8 +8,8 @@
    +------------------------------------------------------------------------+ */
 #pragma once
 
+#include <mrpt/containers/Parameters.h>
 #include <mrpt/opengl/CSetOfObjects.h>
-#include <mrpt/system/TParameters.h>
 
 namespace mrpt
 {
@@ -122,8 +122,8 @@ namespace graph_tools
  */
 template <class GRAPH_T>
 CSetOfObjects::Ptr graph_visualize(
-	const GRAPH_T& g, const mrpt::system::TParametersDouble& extra_params =
-						  mrpt::system::TParametersDouble());
+	const GRAPH_T& g, const mrpt::containers::Parameters& extra_params =
+						  mrpt::containers::Parameters());
 
 /** @} */
 }  // namespace graph_tools

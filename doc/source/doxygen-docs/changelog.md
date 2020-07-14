@@ -4,6 +4,7 @@
 - Changes in libraries:
   - \ref mrpt_containers_grp
     - New class mrpt::containers::Parameters for variant-based, nested, YAML-like configuration blocks.
+    - Class moved: mrpt::system::TParameters ==> mrpt::containers::KeyValues. Old one remains as deprecated.
   - \ref mrpt_core_grp
     - New mrpt::for_<> constexpr for loop helper function.
     - New function mrpt::demangle()

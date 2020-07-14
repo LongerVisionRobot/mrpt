@@ -7,14 +7,14 @@
    | Released under BSD License. See: https://www.mrpt.org/License          |
    +------------------------------------------------------------------------+ */
 
-#include "obs-precomp.h"  // Precompiled headers
-
 #include <mrpt/math/TPose2D.h>
 #include <mrpt/obs/CObservation2DRangeScan.h>
 #include <mrpt/obs/CObservationOdometry.h>
 #include <mrpt/obs/carmen_log_tools.h>
 #include <mrpt/system/TParameters.h>
 #include <mrpt/system/string_utils.h>
+
+#include "obs-precomp.h"  // Precompiled headers
 
 using namespace mrpt;
 using namespace mrpt::obs;
@@ -29,7 +29,7 @@ bool mrpt::obs::carmen_log_parse_line(
 	const mrpt::system::TTimeStamp& time_start_log)
 {
 	/** global parameters loaded in previous calls. */
-	static TParametersString global_log_params;
+	static mrpt::containers::KeyValues<std::string> global_log_params;
 
 	out_observations.clear();  // empty output container
 
@@ -53,13 +53,13 @@ bool mrpt::obs::carmen_log_parse_line(
 		CObservation2DRangeScan::Ptr obsLaser_ptr =
 			std::make_shared<CObservation2DRangeScan>();
 		CObservation2DRangeScan* obsLaser =
-			obsLaser_ptr.get();  // Faster access
+			obsLaser_ptr.get();	 // Faster access
 
 		// Parse:
-		int laser_type;  //  SICK_LMS = 0, SICK_PLS = 1, HOKUYO_URG = 2,
+		int laser_type;	 //  SICK_LMS = 0, SICK_PLS = 1, HOKUYO_URG = 2,
 		//  SIMULATED_LASER = 3,
 		double start_angle, angular_resolution, accuracy;
-		int remission_mode;  // OFF = 0, DIRECT = 1, NORMALIZED = 2
+		int remission_mode;	 // OFF = 0, DIRECT = 1, NORMALIZED = 2
 
 		if (!(S >> obsLaser->sensorLabel >> laser_type >> start_angle >>
 			  obsLaser->aperture >> angular_resolution >> obsLaser->maxRange >>
@@ -159,7 +159,7 @@ bool mrpt::obs::carmen_log_parse_line(
 		CObservation2DRangeScan::Ptr obsLaser_ptr =
 			std::make_shared<CObservation2DRangeScan>();
 		CObservation2DRangeScan* obsLaser =
-			obsLaser_ptr.get();  // Faster access
+			obsLaser_ptr.get();	 // Faster access
 
 		// Parse:
 		size_t nRanges;
