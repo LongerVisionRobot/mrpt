@@ -15,17 +15,18 @@ endif(MSVC)
 include_directories("include")
 include_directories(".")
 
-add_library(mrptgtest
+add_library(${PROJECT_NAME}
 	STATIC
 	src/gtest-all.cc
 	)
 
-mrpt_lib_target_requires_cpp17(mrptgtest)
+mrpt_lib_target_requires_cpp17(${PROJECT_NAME})
+set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 17)
 
 if (UNIX AND MRPT_COMPILER_IS_GCC_OR_CLANG)
-	target_compile_options(mrptgtest PRIVATE "-fPIC")
+	target_compile_options(${PROJECT_NAME} PRIVATE "-fPIC")
 endif()
 
 
 
-set_target_properties(mrptgtest PROPERTIES FOLDER "3rd party")
+set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER "3rd party")
